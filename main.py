@@ -26,3 +26,36 @@ auth = OAuth1(consumer_key, consumer_secret,
 def twitter_request(req_url, auth, params):
     result = requests.get(req_url, auth=auth, params=params).json()
     return result
+
+
+def extract_twit_data(list_of_statuses):
+    twits_dataframe = pd.DataFrame()
+    created_at_list = []
+    id_list = []
+    text_list = []
+    source_list = []
+    user_id_list = []
+    user_location_list = []
+    retweet_count_list = []
+    favorite_count_list = []
+
+    for i in range(len(list_of_statuses)):
+        created_at_list.append(list_of_statuses[i]['created_at'])
+        id_list.append(list_of_statuses[i]['id'])
+        text_list.append(list_of_statuses[i]['text'])
+        source_list.append(list_of_statuses[i]['source'])
+        user_id_list.append(list_of_statuses[i]['user']['id'])
+        user_location_list.append(list_of_statuses[i]['user']['location'])
+        retweet_count_list.append(list_of_statuses[i]['retweet_count'])
+        favorite_count_list.append(list_of_statuses[i]['favorite_count'])
+
+    twits_dataframe['id'] = id_list
+    twits_dataframe['created_at'] = created_at_list
+    twits_dataframe['text'] = text_list
+    twits_dataframe['source'] = source_list
+    twits_dataframe['user_id'] = user_id_list
+    twits_dataframe['user_location'] = user_location_list
+    twits_dataframe['retweet_count'] = retweet_count_list
+    twits_dataframe['favorite_count'] = favorite_count_list
+    twits_dataframe.set_index('id', inplace=True)
+    return twits_dataframe
