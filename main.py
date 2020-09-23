@@ -4,6 +4,8 @@ import json
 import twitter
 import requests
 from requests_oauthlib import OAuth1
+import tweepy
+import csv
 
 with open('twitter_keys.json') as f:
     keys = json.load(f)
@@ -21,6 +23,20 @@ api = twitter.Api(consumer_key=consumer_key,
 
 auth = OAuth1(consumer_key, consumer_secret,
               access_token_key, access_token_secret)
+
+auth_tweepy = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth_tweepy.set_access_token(access_token_key, access_token_secret)
+
+tweepy_api = tweepy.API(auth_tweepy, wait_on_rate_limit=True)
+csvFile = open('luzu.csv', 'a')
+csvWriter = csv.writer(csvFile)
+
+# Get all twits from a hashtag
+for tweet in tweepy.Cursor(tweepy_api.search, q="Luzu", count=100,
+                           lang="es",
+                           since="2020-07-21").items():
+    print(tweet.created_at, tweet.text)
+    csvWriter.writerow([tweet.created_at, tweet.text.encode('utf-8')])
 
 
 def twitter_request(req_url, auth, params):

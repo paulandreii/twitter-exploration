@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 import twitter
+import tweepy
 import requests
 from requests_oauthlib import OAuth1
 
@@ -33,6 +34,11 @@ class DataExtraction:
                                consumer_secret=self.consumer_secret,
                                access_token_key=self.access_token_key,
                                access_token_secret=self.access_token_secret)
+        self.auth_tweepy = tweepy.OAuthHandler(
+            self.consumer_key, self.consumer_secret)
+        self.auth_tweepy.set_access_token(
+            self.access_token_key, self.access_token_secret)
+        self.tweepy_api = tweepy.API(self.auth_tweepy, wait_on_rate_limit=True)
 
     def twitter_request(self, req_url, params):
         '''
@@ -78,3 +84,15 @@ class DataExtraction:
         twits_dataframe['favorite_count'] = favorite_count_list
         twits_dataframe.set_index('id', inplace=True)
         return twits_dataframe
+
+    def get_all_hashtag_data(self, hashtag_name, lang="es", since="2020-07-21"):
+        '''
+        Gets all the tweets for the specified hashtag, language and since that date.
+        '''
+        list_of_tweets = []
+        for tweet in tweepy.Cursor(self.tweepy_api.search, q=hashtag_name, count=100,
+                                   lang=lang,
+                                   since=since).items():
+            print(tweet.text)
+            list_of_tweets.append(tweet)
+        return list_of_tweets
