@@ -1,0 +1,7 @@
+This is a text
+This is a list of possible analysis to be done:
+- 1 - Segmentation of data: political ideas
+- 2 - Segmentation of data: abnormal activity (spam).
+- 3 - Prediction of possible retweets. What is the type of tweet that tends to be retweeted?
+- 4 - Tweet "tone" classification: meme (which is not of any other type), normal, good or evil
+- 5 - Tweet dictionary: look for the most used acronyms
