@@ -68,7 +68,7 @@ class DataExtraction:
         for i in range(len(list_of_statuses)):
             created_at_list.append(list_of_statuses[i]['created_at'])
             id_list.append(list_of_statuses[i]['id'])
-            text_list.append(list_of_statuses[i]['text'])
+            text_list.append(list_of_statuses[i]['full_text']) #needs tweet_mode extended in params when called
             source_list.append(list_of_statuses[i]['source'])
             user_id_list.append(list_of_statuses[i]['user']['id'])
             user_location_list.append(list_of_statuses[i]['user']['location'])
@@ -77,7 +77,7 @@ class DataExtraction:
 
         twits_dataframe['id'] = id_list
         twits_dataframe['created_at'] = created_at_list
-        twits_dataframe['text'] = text_list
+        twits_dataframe['full_text'] = text_list
         twits_dataframe['source'] = source_list
         twits_dataframe['user_id'] = user_id_list
         twits_dataframe['user_location'] = user_location_list
@@ -92,7 +92,7 @@ class DataExtraction:
         '''
         list_of_tweets = []
         tweetWriter = csv_writer.TweetCSVWriter(csv_name=hashtag_name, column_names=[
-            'id', 'created_at', 'text', 'source', 'user_id', 'user_location', 'retweet_count', 'favorite_count'], separator=",")
+            'id', 'created_at', 'full_text', 'source', 'user_id', 'user_location', 'retweet_count', 'favorite_count'], separator=",")
         for tweet in tweepy.Cursor(self.tweepy_api.search, q=hashtag_name, count=100,
                                    lang=lang,
                                    since=since).items():
