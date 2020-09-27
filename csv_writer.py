@@ -10,13 +10,13 @@ class TweetCSVWriter:
         self.csv_name = csv_name
         self.column_names = column_names
         self.separator = separator
-        self.csv_file = open(self.csv_name + '.csv', 'a')
+        self.csv_file = open(self.csv_name + '.csv', 'a', encoding="utf8")
         with self.csv_file as f:
             wr = csv.writer(f, delimiter=self.separator)
             wr.writerow(self.column_names)
 
     def tweet_writer(self, tweet_data):
-        data_file = open(self.csv_file.name, 'a')
+        data_file = open(self.csv_file.name, 'a', encoding="utf8")
 
         with data_file as fl:
             self.csvWriter = csv.writer(fl, delimiter=self.separator)

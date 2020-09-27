@@ -68,7 +68,8 @@ class DataExtraction:
         for i in range(len(list_of_statuses)):
             created_at_list.append(list_of_statuses[i]['created_at'])
             id_list.append(list_of_statuses[i]['id'])
-            text_list.append(list_of_statuses[i]['full_text']) #needs tweet_mode extended in params when called
+            # needs tweet_mode extended in params when called
+            text_list.append(list_of_statuses[i]['full_text'])
             source_list.append(list_of_statuses[i]['source'])
             user_id_list.append(list_of_statuses[i]['user']['id'])
             user_location_list.append(list_of_statuses[i]['user']['location'])
@@ -95,14 +96,15 @@ class DataExtraction:
             'id', 'created_at', 'full_text', 'source', 'user_id', 'user_location', 'retweet_count', 'favorite_count'], separator=",")
         for tweet in tweepy.Cursor(self.tweepy_api.search, q=hashtag_name, count=100,
                                    lang=lang,
-                                   since=since).items():
-            tweet_data = [tweet.id, tweet.created_at, tweet.text.encode('utf-8'), tweet.source,
+                                   since=since,
+                                   tweet_mode='extended').items():
+            tweet_data = [tweet.id, tweet.created_at, tweet.full_text.encode('utf-8'), tweet.source,
                           tweet.user.id, tweet.user.location.encode('utf-8'), tweet.retweet_count, tweet.favorite_count]
 
             # print(tweet_data)
 
             tweetWriter.tweet_writer(tweet_data)
             list_of_tweets.append(tweet_data)
-            if len(list_of_tweets) == 30000:
+            if len(list_of_tweets) == 3000:
                 break
         return list_of_tweets
