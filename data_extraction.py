@@ -108,3 +108,34 @@ class DataExtraction:
             if len(list_of_tweets) == 3000:
                 break
         return list_of_tweets
+
+    def tweet_xlsx_file(self, df):
+        '''
+        Writes an XLSX files from a specific twits_dataframe
+        '''
+        print('Write XLSX file name')
+        xlsxfilename = input()
+        writer = pd.ExcelWriter(xlsxfilename+".xlsx", engine="xlsxwriter")
+        df.to_excel(writer, sheet_name=xlsxfilename)
+        workbook = writer.book
+        worksheet = writer.sheets[xlsxfilename]
+        # Set the columns width and format
+        # ID width and format
+        formatid = workbook.add_format({'num_format': '0'})
+        worksheet.set_column(0, 0, 30, formatid)
+        # Created At width
+        worksheet.set_column(1, 1, 35)
+        # Full_text width (gonna be long)
+        worksheet.set_column(2, 2, 280)
+        # source width
+        worksheet.set_column(3, 3, 80)
+        # user_id width and format
+        formatuid = workbook.add_format({'num_format': '0'})
+        worksheet.set_column(4, 4, 20, formatuid)
+        # user_location width
+        worksheet.set_column(5, 5, 30)
+        # retweet_width
+        worksheet.set_column(6, 6, 15)
+        # favorite_count width
+        worksheet.set_column(7, 7, 15)
+        writer.save()
