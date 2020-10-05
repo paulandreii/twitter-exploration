@@ -1,6 +1,7 @@
 .ipynb_checkpoints/
 database.ini
 __pycache__/
+database.ini
 *.json
 *.csv
 *.xlsx

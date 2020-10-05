@@ -6,6 +6,9 @@ import tweepy
 import requests
 from requests_oauthlib import OAuth1
 import csv_writer
+import psycopg2
+from config import config
+import datetime as dt
 
 
 class DataExtraction:
@@ -87,7 +90,7 @@ class DataExtraction:
         twits_dataframe.set_index('id', inplace=True)
         return twits_dataframe
 
-    def get_all_hashtag_data(self, hashtag_name, lang="es", since="2020-07-21"):
+    def get_all_hashtag_data_csv(self, hashtag_name, lang="es", since="2020-07-21"):
         '''
         Gets all the tweets for the specified hashtag, language and since that date.
         '''
@@ -108,6 +111,49 @@ class DataExtraction:
             if len(list_of_tweets) == 3000:
                 break
         return list_of_tweets
+
+    def get_all_hashtag_data_postgres(self, hashtag_name, lang="es", since="2020-07-21"):
+        '''
+        Gets all the tweets for the specified hashtag, language and since that date.
+        '''
+        f = '%Y-%m-%d %H:%M:%S%Z'
+        i = 0
+
+        db_params = config()
+        conn = psycopg2.connect(**db_params)
+        db_cursor = conn.cursor()
+
+        table_name = hashtag_name.replace(" ", "_")
+
+        try:
+            db_cursor.execute('CREATE TABLE ' + table_name +
+                              ' (id BIGINT, created_at timestamp null, full_text text null, source text null, user_id BIGINT null, user_location text null, retweet_count int null, favorite_count int null)')
+            db_cursor.execute('CREATE UNIQUE INDEX idx ON ' +
+                              table_name + ' (id);')
+        except Exception as e:
+            print(e)
+
+        for tweet in tweepy.Cursor(self.tweepy_api.search, q=hashtag_name, count=100,
+                                   lang=lang,
+                                   since=since,
+                                   tweet_mode='extended',
+                                   exclude='retweets').items():
+            tweet_data = {'id': tweet.id, 'created_at': tweet.created_at.strftime(f), 'full_text': tweet.full_text, 'source': tweet.source,
+                          'user_id': tweet.user.id, 'user_location': tweet.user.location, 'retweet_count': tweet.retweet_count, 'favorite_count': tweet.favorite_count}
+
+            try:
+                db_cursor.execute('INSERT INTO ' + table_name +
+                                  ' (id, created_at, full_text, source, user_id, user_location, retweet_count, favorite_count) VALUES (%(id)s, %(created_at)s, %(full_text)s, %(source)s, %(user_id)s, %(user_location)s, %(retweet_count)s, %(favorite_count)s);', tweet_data)
+            except Exception as e:
+                print(e)
+
+            i += 1
+            if i == 60000:
+                break
+        conn.commit()
+        db_cursor.close()
+        conn.close()
+        return
 
     def tweet_xlsx_file(self, df):
         '''
