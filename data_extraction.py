@@ -128,8 +128,6 @@ class DataExtraction:
         try:
             db_cursor.execute('CREATE TABLE ' + table_name +
                               ' (id BIGINT, created_at timestamp null, full_text text null, source text null, user_id BIGINT null, user_location text null, retweet_count int null, favorite_count int null)')
-            db_cursor.execute('CREATE UNIQUE INDEX idx ON ' +
-                              table_name + ' (id);')
         except Exception as e:
             print(e)
 
