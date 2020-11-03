@@ -33,11 +33,6 @@ class DataExtraction:
 
         self.auth = OAuth1(self.consumer_key, self.consumer_secret,
                            self.access_token_key, self.access_token_secret)
-
-        self.api = twitter.Api(consumer_key=self.consumer_key,
-                               consumer_secret=self.consumer_secret,
-                               access_token_key=self.access_token_key,
-                               access_token_secret=self.access_token_secret)
         self.auth_tweepy = tweepy.OAuthHandler(
             self.consumer_key, self.consumer_secret)
         self.auth_tweepy.set_access_token(
