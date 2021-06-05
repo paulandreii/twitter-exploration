@@ -33,11 +33,6 @@ class DataExtraction:
 
         self.auth = OAuth1(self.consumer_key, self.consumer_secret,
                            self.access_token_key, self.access_token_secret)
-
-        self.api = twitter.Api(consumer_key=self.consumer_key,
-                               consumer_secret=self.consumer_secret,
-                               access_token_key=self.access_token_key,
-                               access_token_secret=self.access_token_secret)
         self.auth_tweepy = tweepy.OAuthHandler(
             self.consumer_key, self.consumer_secret)
         self.auth_tweepy.set_access_token(
@@ -64,6 +59,7 @@ class DataExtraction:
         text_list = []
         source_list = []
         user_id_list = []
+        user_name_list = []
         user_location_list = []
         retweet_count_list = []
         favorite_count_list = []
@@ -75,6 +71,7 @@ class DataExtraction:
             text_list.append(list_of_statuses[i]['full_text'])
             source_list.append(list_of_statuses[i]['source'])
             user_id_list.append(list_of_statuses[i]['user']['id'])
+            user_name_list.append(list_of_statuses[i]['user']['screen_name'])
             user_location_list.append(list_of_statuses[i]['user']['location'])
             retweet_count_list.append(list_of_statuses[i]['retweet_count'])
             favorite_count_list.append(list_of_statuses[i]['favorite_count'])
@@ -84,6 +81,7 @@ class DataExtraction:
         twits_dataframe['full_text'] = text_list
         twits_dataframe['source'] = source_list
         twits_dataframe['user_id'] = user_id_list
+        twits_dataframe['user_name'] = user_name_list
         twits_dataframe['user_location'] = user_location_list
         twits_dataframe['retweet_count'] = retweet_count_list
         twits_dataframe['favorite_count'] = favorite_count_list
@@ -128,8 +126,6 @@ class DataExtraction:
         try:
             db_cursor.execute('CREATE TABLE ' + table_name +
                               ' (id BIGINT, created_at timestamp null, full_text text null, source text null, user_id BIGINT null, user_location text null, retweet_count int null, favorite_count int null)')
-            db_cursor.execute('CREATE UNIQUE INDEX idx ON ' +
-                              table_name + ' (id);')
         except Exception as e:
             print(e)
 
