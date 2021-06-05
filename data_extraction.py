@@ -59,6 +59,7 @@ class DataExtraction:
         text_list = []
         source_list = []
         user_id_list = []
+        user_name_list = []
         user_location_list = []
         retweet_count_list = []
         favorite_count_list = []
@@ -70,6 +71,7 @@ class DataExtraction:
             text_list.append(list_of_statuses[i]['full_text'])
             source_list.append(list_of_statuses[i]['source'])
             user_id_list.append(list_of_statuses[i]['user']['id'])
+            user_name_list.append(list_of_statuses[i]['user']['screen_name'])
             user_location_list.append(list_of_statuses[i]['user']['location'])
             retweet_count_list.append(list_of_statuses[i]['retweet_count'])
             favorite_count_list.append(list_of_statuses[i]['favorite_count'])
@@ -79,6 +81,7 @@ class DataExtraction:
         twits_dataframe['full_text'] = text_list
         twits_dataframe['source'] = source_list
         twits_dataframe['user_id'] = user_id_list
+        twits_dataframe['user_name'] = user_name_list
         twits_dataframe['user_location'] = user_location_list
         twits_dataframe['retweet_count'] = retweet_count_list
         twits_dataframe['favorite_count'] = favorite_count_list
